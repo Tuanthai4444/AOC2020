@@ -1,0 +1,44 @@
+public static int december7_Part2(String[] list, String bagType) {
+        int count = 0;
+        Map<String, List<String>> map = new HashMap<>();
+
+        for (String s : list) {
+            String rule = s;
+            rule = rule.replaceAll("contain", "");
+            rule = rule.replaceAll("bags", "bag");
+            rule = rule.replaceAll("[^a-zA-Z0-9]", "");
+
+            String[] rules = rule.split("bag");
+            List<String> children = new ArrayList<>();
+            for (int i = 1; i < rules.length; i++) {
+                children.add(rules[i]);
+            }
+            map.put(rules[0], children);
+        }
+
+        Stack<String> toVisit = new Stack<>();
+        Stack<Integer> value = new Stack<>();
+
+        toVisit.add(bagType);
+        value.add(1);
+        while(!toVisit.isEmpty()) {
+            String curr = toVisit.pop();
+            int currNum = value.pop();
+
+            if(map.containsKey(curr)) {
+                for (String s : map.get(curr)) {
+                    if(s.equals("noother")) {
+                        continue;
+                    }
+
+                    int i = Character.getNumericValue(s.charAt(0));
+                    String ns = s.replaceAll("[0-9]", "");
+
+                    toVisit.add(ns);
+                    value.add(currNum * i);
+                    count += (currNum * i);
+                }
+            }
+        }
+        return count;
+    }
